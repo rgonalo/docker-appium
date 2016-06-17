@@ -1,4 +1,4 @@
-FROM rgonalo/android
+FROM rgonalo/appium
 MAINTAINER Ruben Gonzalez Alonso <rgonalo@gmail.com>
 
 USER root
@@ -54,9 +54,9 @@ RUN apt-get update -qqy \
     fluxbox \
   && rm -rf /var/lib/apt/lists/*
 
-#========================
-# Scripts to run Android
-#========================
+#=======================
+# Scripts to run Appium
+#=======================
 COPY entry_point.sh /opt/bin/entry_point.sh
 RUN chmod +x /opt/bin/entry_point.sh
 

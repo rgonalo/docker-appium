@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Starts android emulator in a virtual display
-sudo -E -i -u appiumuser \
-  DISPLAY=:99.0 \
+sudo -E -i -u appium \
+  ANDROID_HOME=$ANDROID_HOME \
+  DISPLAY=$DISPLAY \
   xvfb-run -n 99 --server-args="-screen 0 1360x1020x24 -ac +extension RANDR" \
-  /opt/android-sdk-linux/tools/emulator64-arm -avd android-$AVD_VERSION &
+  /home/appium/appium &
 NODE_PID=$!
 
 # Waits until xvfb is started

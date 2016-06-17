@@ -16,7 +16,7 @@ RUN apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     bzip2 \
     ca-certificates \
-    openjdk-8-jre-headless \
+    openjdk-8-jdk-headless \
     sudo \
     unzip \
     wget \
@@ -34,27 +34,53 @@ RUN cd /opt \
 ENV ANDROID_HOME /opt/android-sdk-linux
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
 RUN cd $ANDROID_HOME \
-  && chmod +x tools/android tools/emulator64-arm
+  && mv tools/emulator tools/emulator-backup \
+  && cp tools/emulator64-arm tools/emulator \
+  && chmod +x tools/android tools/emulator
 
 #=====================
 # Android SDK Manager
 #=====================
 ENV AVD_VERSION 19
-ENV ANDROID_COMPONENTS platform-tools,build-tools-24.0.0,android-$AVD_VERSION,sys-img-armeabi-v7a-android-$AVD_VERSION
+ENV ANDROID_COMPONENTS platform-tools,build-tools-24.0.0,android-$AVD_VERSION
 RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONENTS}
+
+#================
+# Nodejs and npm
+#================
+RUN apt-get update -qqy \
+  && apt-get -qqy --no-install-recommends install \
+    nodejs \
+    npm \
+  && rm -rf /var/lib/apt/lists/* \
+  && ln -s /usr/bin/nodejs /usr/bin/node
+
+#============================================
+# Add udev rules file with USB configuration
+#============================================
+ENV UDEV_REMOTE_FILE https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/ubuntu/51-android.rules
+RUN mkdir /etc/udev/rules.d \
+  && wget --no-verbose $UDEV_REMOTE_FILE -O /etc/udev/rules.d/51-android.rules \
+  && chmod a+r /etc/udev/rules.d/51-android.rules
 
 #========================================
 # Add normal user with passwordless sudo
 #========================================
-RUN sudo useradd appiumuser --shell /bin/bash --create-home \
-  && sudo usermod -a -G sudo appiumuser \
+RUN sudo useradd appium --shell /bin/bash --create-home \
+  && sudo usermod -a -G sudo appium \
   && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
-&& echo 'appiumuser:secret' | chpasswd
+  && echo 'appium:secret' | chpasswd
 
-USER appiumuser
+USER appium
 
-#==================
-# Android Emulator
-#==================
-RUN android create avd --force --name android-$AVD_VERSION --target android-$AVD_VERSION \
-  --device "Nexus 5" --abi armeabi-v7a --skin WVGA800
+#========
+# Appium
+#========
+ENV APPIUM_VERSION 1.5.3
+RUN cd /home/appium \
+  && npm install appium@$APPIUM_VERSION \
+  && ln -s node_modules/.bin/appium appium
+
+EXPOSE 4723
+
+CMD /home/appium/appium

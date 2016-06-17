@@ -19,7 +19,7 @@ You can acquire the port that the VNC server is exposed to by running:
 
 ``` bash
 $ docker port <container-name|container-id> 5900
-#=> 0.0.0.0:49338
+#=> 0.0.0.0:49412
 ```
 
 When you are prompted for the password it is __secret__.
