@@ -60,27 +60,15 @@ RUN apt-get update -qqy \
 #============================================
 ENV UDEV_REMOTE_FILE https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/ubuntu/51-android.rules
 RUN mkdir /etc/udev/rules.d \
-  && wget --no-verbose $UDEV_REMOTE_FILE -O /etc/udev/rules.d/51-android.rules \
-  && chmod a+r /etc/udev/rules.d/51-android.rules
-
-#========================================
-# Add normal user with passwordless sudo
-#========================================
-RUN sudo useradd appium --shell /bin/bash --create-home \
-  && sudo usermod -a -G sudo appium \
-  && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
-  && echo 'appium:secret' | chpasswd
-
-USER appium
+  && wget --no-verbose $UDEV_REMOTE_FILE -O /etc/udev/rules.d/51-android.rules
 
 #========
 # Appium
 #========
 ENV APPIUM_VERSION 1.5.3
-RUN cd /home/appium \
-  && npm install appium@$APPIUM_VERSION \
-  && ln -s node_modules/.bin/appium appium
+RUN npm install -g appium@$APPIUM_VERSION
 
+# Appium server port
 EXPOSE 4723
 
-CMD /home/appium/appium
+CMD appium

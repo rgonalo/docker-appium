@@ -1,5 +1,5 @@
 Appium Image
-=============
+============
 
 Docker image for running Appium server with Android devices.
 

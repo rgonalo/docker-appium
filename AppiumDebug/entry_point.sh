@@ -1,11 +1,15 @@
 #!/bin/bash
 
-# Starts android emulator in a virtual display
-sudo -E -i -u appium \
-  ANDROID_HOME=$ANDROID_HOME \
-  DISPLAY=$DISPLAY \
-  xvfb-run -n 99 --server-args="-screen 0 1360x1020x24 -ac +extension RANDR" \
-  /home/appium/appium &
+function shutdown {
+  kill -s SIGTERM $NODE_PID
+  wait $NODE_PID
+}
+
+# Starts Appium server in a virtual display
+GEOMETRY="$SCREEN_WIDTH""x""$SCREEN_HEIGHT""x""$SCREEN_DEPTH"
+SERVER_NUM=$(echo $DISPLAY | sed -r -e 's/([^:]+)?:([0-9]+)(\.[0-9]+)?/\2/')
+xvfb-run -n $SERVER_NUM --server-args="-screen 0 $GEOMETRY -ac +extension RANDR" \
+  appium &
 NODE_PID=$!
 
 # Waits until xvfb is started
@@ -23,4 +27,5 @@ done
 fluxbox -display $DISPLAY &
 x11vnc -forever -usepw -shared -rfbport 5900 -display $DISPLAY &
 
+trap shutdown SIGTERM SIGINT
 wait $NODE_PID

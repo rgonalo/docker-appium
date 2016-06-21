@@ -1,8 +1,6 @@
 FROM rgonalo/appium
 MAINTAINER Ruben Gonzalez Alonso <rgonalo@gmail.com>
 
-USER root
-
 #==========
 # GUI Java
 #==========
@@ -60,7 +58,15 @@ RUN apt-get update -qqy \
 COPY entry_point.sh /opt/bin/entry_point.sh
 RUN chmod +x /opt/bin/entry_point.sh
 
+#============================
+# Some configuration options
+#============================
+ENV SCREEN_WIDTH 1360
+ENV SCREEN_HEIGHT 1020
+ENV SCREEN_DEPTH 24
 ENV DISPLAY :99.0
+
+# VNC port
 EXPOSE 5900
 
 CMD ["/opt/bin/entry_point.sh"]
