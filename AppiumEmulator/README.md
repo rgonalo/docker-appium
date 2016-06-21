@@ -1,7 +1,7 @@
-Appium Emulator Image
-=====================
+Appium Emulator
+===============
 
-Docker image for running Appium server with Android emulators.
+Appium server to run tests on Android emulators.
 
 How to use this image
 ---------------------
@@ -18,3 +18,5 @@ You can acquire the port that the Appium server is exposed to by running:
 $ docker port appium 4723
 #=> 0.0.0.0:49412
 ```
+
+Finally, you can execute your Appium tests on the remote server CONTAINER_IP:49412.

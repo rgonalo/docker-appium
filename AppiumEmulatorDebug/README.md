@@ -1,7 +1,7 @@
-Appium Emulator Debug Image
-===========================
+Appium Emulator Debug
+=====================
 
-Docker image with Android SDK, Android emulator and a VNC Server to allow you to visually see the Android emulator.
+Appium server to run tests on Android emulators and a VNC Server to allow you to visually see the Android emulator.
 Since it runs additional services to support this it is too heavy weight for usage to automate tests.
 
 This image has been created based on Selenium NodeFirefoxDebug image: 
