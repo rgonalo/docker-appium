@@ -1,7 +1,7 @@
-Android Debug Image
-===================
+Android Debug
+=============
 
-Docker image with Android SDK, Appium and a VNC Server to allow you to visually see the Ubuntu desktop.
+Appium server to run tests on Android devices and a VNC Server to allow you to visually see the Ubuntu desktop.
 Since it runs additional services to support this it is too heavy weight for usage to automate tests.
 
 This image has been created based on Selenium NodeFirefoxDebug image: 
@@ -15,6 +15,8 @@ Launch the image:
 ``` bash
 $ docker run -d -P --privileged -v /dev/bus/usb:/dev/bus/usb --name android-debug rgonalo/android-debug
 ```
+
+The *--privileged* option allows docker instance to view connected USB devices.
 
 You can acquire the port that the VNC server is exposed to by running:
 
