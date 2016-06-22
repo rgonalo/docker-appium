@@ -23,6 +23,9 @@ do
   sleep 0.5
 done
 
+# Starts Android emulator in a virtual display
+emulator -avd android-$AVD_VERSION -snapshot appium &
+
 # Starts fluxbox and vnc
 fluxbox -display $DISPLAY &
 x11vnc -forever -usepw -shared -rfbport 5900 -display $DISPLAY &
