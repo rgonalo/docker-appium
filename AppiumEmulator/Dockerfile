@@ -1,11 +1,11 @@
 FROM rgonalo/appium
 MAINTAINER Ruben Gonzalez Alonso <rgonalo@gmail.com>
 
-#=================================
-# Android SDK Manager (arm image)
-#=================================
+#===========================
+# Android SDK Manager (API)
+#===========================
 ENV AVD_VERSION 19
-ENV ANDROID_COMPONENTS sys-img-armeabi-v7a-android-$AVD_VERSION
+ENV ANDROID_COMPONENTS android-$AVD_VERSION, sys-img-armeabi-v7a-android-$AVD_VERSION
 RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONENTS}
 
 #=========================
