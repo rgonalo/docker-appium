@@ -15,7 +15,7 @@ $ docker run -d -P --name appium-emulator rgonalo/appium-emulator
 You can acquire the port that the Appium server is exposed to by running:
 
 ``` bash
-$ docker port appium 4723
+$ docker port appium-emulator 4723
 #=> 0.0.0.0:49412
 ```
 

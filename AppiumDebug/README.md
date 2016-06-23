@@ -13,7 +13,7 @@ How to use this image
 Launch the image:
 
 ``` bash
-$ docker run -d -P --privileged -v /dev/bus/usb:/dev/bus/usb --name android-debug rgonalo/android-debug
+$ docker run -d -P --privileged -v /dev/bus/usb:/dev/bus/usb --name appium-debug rgonalo/appium-debug
 ```
 
 The *--privileged* option allows docker instance to view connected USB devices.
