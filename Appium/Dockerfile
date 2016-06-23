@@ -41,15 +41,20 @@ RUN cd /opt \
 ENV ANDROID_COMPONENTS platform-tools,build-tools-24.0.0
 RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONENTS}
 
-#================
-# Nodejs and npm
-#================
+#===================
+# Nodejs and Appium
+#===================
+ENV APPIUM_VERSION 1.5.3
 RUN apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     nodejs \
     npm \
-  && rm -rf /var/lib/apt/lists/* \
-  && ln -s /usr/bin/nodejs /usr/bin/node
+  && ln -s /usr/bin/nodejs /usr/bin/node \
+  && npm install -g appium@$APPIUM_VERSION \
+  && npm cache clean \
+  && apt-get remove --purge -y npm \
+  && apt-get autoremove --purge -y \
+  && rm -rf /var/lib/apt/lists/*
 
 #============================================
 # Add udev rules file with USB configuration
@@ -57,13 +62,6 @@ RUN apt-get update -qqy \
 ENV UDEV_REMOTE_FILE https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/ubuntu/51-android.rules
 RUN mkdir /etc/udev/rules.d \
   && wget --no-verbose $UDEV_REMOTE_FILE -O /etc/udev/rules.d/51-android.rules
-
-#========
-# Appium
-#========
-ENV APPIUM_VERSION 1.5.3
-RUN npm install -g appium@$APPIUM_VERSION \
-  && find /root/.npm/ -name "*.tgz" -exec rm -f {} \;
 
 # Appium server port
 EXPOSE 4723
