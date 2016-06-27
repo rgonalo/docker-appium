@@ -10,19 +10,41 @@ https://github.com/SeleniumHQ/docker-selenium/blob/master/NodeFirefoxDebug
 How to use this image
 ---------------------
 
-Launch the image:
+#### Launch the image
+
+Launch the image with *--privileged* option to allow docker instance to view connected USB devices:
 
 ``` bash
-$ docker run -d -P --privileged -v /dev/bus/usb:/dev/bus/usb --name android-debug rgonalo/android-debug
+$ docker run -d -P --privileged -v /dev/bus/usb:/dev/bus/usb --name appium-debug rgonalo/appium-debug
 ```
 
-The *--privileged* option allows docker instance to view connected USB devices.
+#### Get VNC port and Appium server ip and port
 
-You can acquire the port that the VNC server is exposed to by running:
+You can acquire the ports that the Appium and VNC servers are exposed to by running:
 
 ``` bash
-$ docker port appium-debug 5900
-#=> 0.0.0.0:49413
+$ docker port appium-debug 4723 5900
+#=> 4723/tcp -> 0.0.0.0:49412
+    5900/tcp -> 0.0.0.0:49413
 ```
 
-The default VNC password is __secret__.
+In Linux, Appium server ip is *127.0.0.1*, but in Windows and Mac you must acquire the ip by running:
+
+``` bash
+$ docker-machine ip
+#=> 192.168.99.100
+```
+
+#### Run Appium tests
+
+Connect your Android mobile to the host via USB and execute your Appium tests on the remote server
+*192.168.99.100:49412*.
+
+You can tail Appium server logs with the following docker command:
+
+``` bash
+$ docker logs --follow appium-debug
+```
+
+Also, you can connect with a VNC Client to *192.168.99.100:49413* to view the Ubuntu desktop. The default VNC password
+is __secret__.

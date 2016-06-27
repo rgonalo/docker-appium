@@ -14,7 +14,8 @@ RUN apt-get update -qqy \
 #==============
 RUN apt-get update -qqy \
   && apt-get -qqy install \
-    xvfb x11vnc \
+    xvfb \
+    x11vnc \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -p ~/.vnc \
   && x11vnc -storepasswd secret ~/.vnc/passwd
