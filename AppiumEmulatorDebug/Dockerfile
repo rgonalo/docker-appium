@@ -25,9 +25,11 @@ RUN apt-get update -qqy \
 #=================
 ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.UTF-8
-RUN locale-gen en_US.UTF-8 \
+RUN apt-get update -qqy \
+  && apt-get -qqy --no-install-recommends install \
+    locales \
+  && locale-gen en_US.UTF-8 \
   && dpkg-reconfigure --frontend noninteractive locales \
-  && apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     language-pack-en \
   && rm -rf /var/lib/apt/lists/*

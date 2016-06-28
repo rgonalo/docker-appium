@@ -5,14 +5,16 @@ MAINTAINER Ruben Gonzalez Alonso <rgonalo@gmail.com>
 # Android SDK Manager (API)
 #===========================
 ENV AVD_VERSION 19
-ENV ANDROID_COMPONENTS android-$AVD_VERSION,sys-img-armeabi-v7a-android-$AVD_VERSION
-RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONENTS}
+ENV AVD_PACKAGE "system-images;android-$AVD_VERSION;default;armeabi-v7a"
+RUN mkdir -p ~/.android && touch ~/.android/repositories.cfg
+RUN echo y | sdkmanager "platforms;android-$AVD_VERSION"
+RUN echo y | sdkmanager "$AVD_PACKAGE"
 
 #=========================
 # Create Android Emulator
 #=========================
-RUN android create avd --force --name android-$AVD_VERSION --target android-$AVD_VERSION \
-  --device "Nexus S" --abi armeabi-v7a --skin WVGA800
+ENV DEVICE "Nexus S"
+RUN avdmanager create avd --force --name "android-$AVD_VERSION" --package "$AVD_PACKAGE" --device "$DEVICE"
 
 #============================================
 # Scripts to run Appium and Android emulator

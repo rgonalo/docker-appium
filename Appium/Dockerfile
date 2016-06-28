@@ -1,13 +1,12 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 MAINTAINER Ruben Gonzalez Alonso <rgonalo@gmail.com>
 
 #===============================
 # Customize sources for apt-get
 #===============================
-RUN echo "deb http://archive.ubuntu.com/ubuntu xenial main universe\n" > /etc/apt/sources.list \
-  && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates main universe\n" >> /etc/apt/sources.list \
-  && echo "deb http://security.ubuntu.com/ubuntu xenial-security main universe\n" >> /etc/apt/sources.list \
-  && echo "deb http://deb.nodesource.com/node_6.x xenial main\n" >> /etc/apt/sources.list
+RUN echo "deb http://archive.ubuntu.com/ubuntu focal main universe\n" > /etc/apt/sources.list \
+  && echo "deb http://archive.ubuntu.com/ubuntu focal-updates main universe\n" >> /etc/apt/sources.list \
+  && echo "deb http://security.ubuntu.com/ubuntu focal-security main universe\n" >> /etc/apt/sources.list
 
 #===================================================================
 # Miscellaneous packages
@@ -18,40 +17,38 @@ RUN apt-get update -qqy \
     ca-certificates \
     openjdk-8-jdk-headless \
     wget \
+    unzip \
   && rm -rf /var/lib/apt/lists/* \
   && sed -i 's/securerandom\.source=file:\/dev\/random/securerandom\.source=file:\/dev\/urandom/' ./usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/java.security
 
 #=============
 # Android SDK
 #=============
-ENV ANDROID_SDK_VERSION 24.4.1
-ENV ANDROID_HOME /opt/android-sdk-linux
-ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-RUN cd /opt \
-  && wget --no-verbose http://dl.google.com/android/android-sdk_r$ANDROID_SDK_VERSION-linux.tgz -O android-sdk.tgz \
-  && tar xzf android-sdk.tgz \
-  && rm -f android-sdk.tgz \
-  && cd android-sdk-linux/tools \
-  && mv -f emulator64-arm emulator \
-  && rm -f emulator64* emulator-* \
-  && chmod +x android emulator
-
-#=====================
-# Android SDK Manager
-#=====================
-ENV ANDROID_COMPONENTS platform-tools,build-tools-25.0.3
-RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONENTS}
+ENV ANDROID_BUILD_TOOLS_VERSION 29.0.3
+# Get Android SDK version from https://developer.android.com/studio/index.html#command-tools
+ENV ANDROID_SDK_VERSION 6609375
+ENV ANDROID_SDK_ROOT /opt/android-sdk
+ENV PATH ${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/emulator:${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/platform-tools
+RUN mkdir -p $ANDROID_SDK_ROOT/cmdline-tools \
+  && cd $ANDROID_SDK_ROOT/cmdline-tools \
+  && wget --no-verbose http://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip -O android-tools.zip \
+  && unzip android-tools.zip \
+  && rm -f android-tools.zip \
+  && mv tools latest
+RUN echo y | sdkmanager "platform-tools"
+RUN echo y | sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION"
 
 #===================
 # Nodejs and Appium
 #===================
-ENV APPIUM_VERSION 1.7.2
-RUN  wget --no-verbose http://deb.nodesource.com/gpgkey/nodesource.gpg.key -O - | apt-key add - \
-  && apt-get update -qqy \
+ENV APPIUM_VERSION 1.18.2
+# ENV NODE_VERSION 10.19.0 (latest version in Ubuntu 20.04)
+RUN apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     nodejs \
-  && npm install -g appium@$APPIUM_VERSION \
-  && npm cache clean \
+    npm \
+  && npm install -g appium@$APPIUM_VERSION --unsafe-perm=true \
+  && npm cache clean --force \
   && apt-get remove --purge -y npm \
   && apt-get autoremove --purge -y \
   && rm -rf /var/lib/apt/lists/*
@@ -60,7 +57,7 @@ RUN  wget --no-verbose http://deb.nodesource.com/gpgkey/nodesource.gpg.key -O - 
 # Add udev rules file with USB configuration
 #============================================
 ENV UDEV_REMOTE_FILE https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/51-android.rules
-RUN mkdir /etc/udev/rules.d \
+RUN mkdir -p /etc/udev/rules.d \
   && wget --no-verbose $UDEV_REMOTE_FILE -O /etc/udev/rules.d/51-android.rules
 
 # Appium server port

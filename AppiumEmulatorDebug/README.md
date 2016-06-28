@@ -10,15 +10,21 @@ https://github.com/SeleniumHQ/docker-selenium/blob/master/NodeFirefoxDebug
 How to use this image
 ---------------------
 
-#### Launch the image
+### Launch the image
+
+##### Option 1: launch the image specifying local ports
+
+``` bash
+$ docker run -d -p APPIUM_LOCAL_PORT:4723 -p VNC_LOCAL_PORT:5900 --name appium-emulator-debug rgonalo/appium-emulator-debug
+```
+
+##### Option 2: launch the image using any free local ports
 
 ``` bash
 $ docker run -d -P --name appium-emulator-debug rgonalo/appium-emulator-debug
 ```
 
-#### Get VNC port and Appium server ip and port
-
-You can acquire the ports that the Appium and VNC servers are exposed to by running:
+Appium server and VNC server exposed ports can be get by running:
 
 ``` bash
 $ docker port appium-emulator-debug
@@ -26,25 +32,20 @@ $ docker port appium-emulator-debug
     5900/tcp -> 0.0.0.0:49413
 ```
 
-In Linux, Appium server ip is *127.0.0.1*, but in Windows and Mac you must acquire the ip by running:
+Where `APPIUM_LOCAL_PORT = 49412` and `VNC_LOCAL_PORT = 49413`
 
-``` bash
-$ docker-machine ip
-#=> 192.168.99.100
-```
+### Run Appium tests
 
-#### Run Appium tests
-
-Execute your Appium tests on the remote server *192.168.99.100:49412*. The test will be executed in a Nexus S emulator
+Execute your Appium tests on the remote server *127.0.0.1:APPIUM_LOCAL_PORT*. The test will be executed in a Nexus S emulator
 with Android 4.4 (API 19).
 
-You can tail Appium server logs with the following docker command:
+To tail Appium server logs, execute following docker command:
 
 ``` bash
 $ docker logs --follow appium-emulator-debug
 ```
 
-Also, you can connect with a VNC Client to *192.168.99.100:49413* to view the Ubuntu desktop and the Android emulator.
+To view the Ubuntu desktop and the Android emulator, use a VNC Client to connect to *127.0.0.1:VNC_LOCAL_PORT*.
 The default VNC password is __secret__.
 
 To install an APK, copy the APK file into the container and then install it with adb from container:
