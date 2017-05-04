@@ -38,13 +38,13 @@ RUN cd /opt \
 #=====================
 # Android SDK Manager
 #=====================
-ENV ANDROID_COMPONENTS platform-tools,build-tools-24.0.0
+ENV ANDROID_COMPONENTS platform-tools,build-tools-25.0.3
 RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONENTS}
 
 #===================
 # Nodejs and Appium
 #===================
-ENV APPIUM_VERSION 1.5.3
+ENV APPIUM_VERSION 1.6.3
 RUN apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     nodejs \
@@ -59,7 +59,7 @@ RUN apt-get update -qqy \
 #============================================
 # Add udev rules file with USB configuration
 #============================================
-ENV UDEV_REMOTE_FILE https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/ubuntu/51-android.rules
+ENV UDEV_REMOTE_FILE https://raw.githubusercontent.com/M0Rf30/android-udev-rules/master/51-android.rules
 RUN mkdir /etc/udev/rules.d \
   && wget --no-verbose $UDEV_REMOTE_FILE -O /etc/udev/rules.d/51-android.rules
 

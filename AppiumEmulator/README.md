@@ -17,7 +17,7 @@ $ docker run -d -P --name appium-emulator rgonalo/appium-emulator
 You can acquire the port that the Appium server is exposed to by running:
 
 ``` bash
-$ docker port appium-emulator 4723
+$ docker port appium-emulator
 #=> 0.0.0.0:49412
 ```
 
@@ -37,4 +37,11 @@ You can tail Appium server logs with the following docker command:
 
 ``` bash
 $ docker logs --follow appium-emulator
+```
+
+To install an APK, copy the APK file into the container and then install it with adb from container:
+
+``` bash
+$ docker cp APK_FILE appium-emulator:/
+$ docker exec -it appium-emulator adb install APK_FILE
 ```

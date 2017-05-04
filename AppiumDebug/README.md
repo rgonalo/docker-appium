@@ -23,7 +23,7 @@ $ docker run -d -P --privileged -v /dev/bus/usb:/dev/bus/usb --name appium-debug
 You can acquire the ports that the Appium and VNC servers are exposed to by running:
 
 ``` bash
-$ docker port appium-debug 4723 5900
+$ docker port appium-debug
 #=> 4723/tcp -> 0.0.0.0:49412
     5900/tcp -> 0.0.0.0:49413
 ```
@@ -48,3 +48,10 @@ $ docker logs --follow appium-debug
 
 Also, you can connect with a VNC Client to *192.168.99.100:49413* to view the Ubuntu desktop. The default VNC password
 is __secret__.
+
+To install an APK, copy the APK file into the container and then install it with adb from container:
+
+``` bash
+$ docker cp APK_FILE appium-debug:/
+$ docker exec -it appium-debug adb install APK_FILE
+```
