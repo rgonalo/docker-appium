@@ -44,7 +44,7 @@ RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONE
 #===================
 # Nodejs and Appium
 #===================
-ENV APPIUM_VERSION 1.6.3
+ENV APPIUM_VERSION 1.6.4
 RUN apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     nodejs \
