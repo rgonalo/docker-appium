@@ -1,4 +1,4 @@
-FROM rgonalo/appium
+FROM rgonalo/appium:latest
 MAINTAINER Ruben Gonzalez Alonso <rgonalo@gmail.com>
 
 #==========
