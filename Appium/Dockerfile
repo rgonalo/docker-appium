@@ -6,7 +6,8 @@ MAINTAINER Ruben Gonzalez Alonso <rgonalo@gmail.com>
 #===============================
 RUN echo "deb http://archive.ubuntu.com/ubuntu xenial main universe\n" > /etc/apt/sources.list \
   && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates main universe\n" >> /etc/apt/sources.list \
-  && echo "deb http://security.ubuntu.com/ubuntu xenial-security main universe\n" >> /etc/apt/sources.list
+  && echo "deb http://security.ubuntu.com/ubuntu xenial-security main universe\n" >> /etc/apt/sources.list \
+  && echo "deb http://deb.nodesource.com/node_6.x xenial main\n" >> /etc/apt/sources.list
 
 #===================================================================
 # Miscellaneous packages
@@ -44,12 +45,11 @@ RUN echo y | android update sdk --all --force --no-ui --filter ${ANDROID_COMPONE
 #===================
 # Nodejs and Appium
 #===================
-ENV APPIUM_VERSION 1.6.4
-RUN apt-get update -qqy \
+ENV APPIUM_VERSION 1.7.2
+RUN  wget --no-verbose http://deb.nodesource.com/gpgkey/nodesource.gpg.key -O - | apt-key add - \
+  && apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     nodejs \
-    npm \
-  && ln -s /usr/bin/nodejs /usr/bin/node \
   && npm install -g appium@$APPIUM_VERSION \
   && npm cache clean \
   && apt-get remove --purge -y npm \
